@@ -40,17 +40,51 @@ public class Main {
         Producto pro3 = new Producto("Rinso", 1500.0, 50, p2, c2);
         Producto pro4 = new Producto("M&Ms", 700.0, 10, p3, c3);
         Producto pro5 = new Producto("Atún Sardimar", 1500.0, 5, p3, c4);
+        Producto pro6 = new Producto("Te", 1000.0, 1, p1, c1);
 
         em.persist(pro1);
         em.persist(pro2);
         em.persist(pro3);
         em.persist(pro4);
         em.persist(pro5);
+        em.persist(pro6);
 
         em.getTransaction().commit();
 
-//        TypedQuery<Department> q1 = em.createQuery("SELECT d FROM Department d", Department.class);
-//        List<Department> result = q1.getResultList();
+        //Consulta para obtener un solo producto
+        TypedQuery<Producto> q1 = em.createQuery("SELECT p FROM Producto p WHERE p.nombre = \"Te\"", Producto.class);
+        Producto p = q1.getSingleResult();
+        System.out.println(p);
+
+        em.getTransaction().begin();
+
+        //Actualización de un producto
+        Query q2 = em.createQuery("UPDATE Producto p SET p.precio = 50000.0 WHERE p.nombre = \"Te\"");
+        q2.executeUpdate();
+
+        em.getTransaction().commit();
+
+        //Consulta para verificar que se actualizó el producto
+        TypedQuery<Producto> q3 = em.createQuery("SELECT p FROM Producto p WHERE p.nombre = \"Te\"", Producto.class);
+        Producto updated = q3.getSingleResult();
+        System.out.println(updated);
+
+        em.getTransaction().begin();
+
+        //Eliminación
+        Query q4 = em.createQuery("DELETE FROM Producto p WHERE p.nombre = \"Te\"");
+        q4.executeUpdate();
+
+        em.getTransaction().commit();
+
+        //Consulta de múltiples productos
+        TypedQuery<Producto> q5 = em.createQuery("SELECT p FROM Producto p", Producto.class);
+        List<Producto> results = q5.getResultList();
+
+        System.out.println("## Productos ##");
+        for (Producto pro : results) {
+            System.out.println(pro);
+        }
 
         em.close();
         emf.close();
