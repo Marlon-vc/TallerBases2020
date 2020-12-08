@@ -1,6 +1,9 @@
-import Models.Department;
-import Models.Employee;
-import Models.Project;
+import Ejemplos.Department;
+import Ejemplos.Employee;
+import Ejemplos.Project;
+import Models.Categoria;
+import Models.Producto;
+import Models.Proveedor;
 
 import javax.persistence.*;
 import java.util.List;
@@ -8,68 +11,46 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
 
-        // Open a database connection
         EntityManagerFactory emf =
-                Persistence.createEntityManagerFactory("C:/Users/Marlo/Desktop/example.odb");
+                Persistence.createEntityManagerFactory("C:/Users/Marlo/Desktop/taller.odb");
         EntityManager em = emf.createEntityManager();
 
-        // Store 1000 entities in the database
-        long startTime = System.nanoTime();
         em.getTransaction().begin();
 
-//        Query dq1 = em.createQuery("DELETE FROM Department d");
-//        dq1.executeUpdate();
-//        Query dq2 = em.createQuery("DELETE FROM Employee e");
-//        dq2.executeUpdate();
-//        Query dq3 = em.createQuery("DELETE FROM Project p");
-//        dq3.executeUpdate();
+        Proveedor p1 = new Proveedor("Antonio Hernández", "Coca Cola", "San José", "85694312");
+        Proveedor p2 = new Proveedor("Pedro Pérez", "Robasa", "Alajuela", "75809340");
+        Proveedor p3 = new Proveedor("Gregorio García", "Coarsa", "Cartago", "65498382");
 
-        Department dept1 = new Department(1, "Finances", "San José");
-        Department dept2 = new Department(2, "HR", "Cartago");
-        em.persist(dept1);
-        em.persist(dept2);
-
-        Project p1 = new Project("Web Page");
-        p1.setDepartment(dept1);
         em.persist(p1);
+        em.persist(p2);
+        em.persist(p3);
 
-        for (int i = 0; i < 500; i++) {
-            Employee emp = new Employee(
-                    "SSN1" + i,
-                    "Name " + i,
-                    "Lastname " + i,
-                    "Birthdate " + i);
-            emp.setDepartment(dept1);
+        Categoria c1 = new Categoria("Bebidas");
+        Categoria c2 = new Categoria("Jabones");
+        Categoria c3 = new Categoria("Dulces");
+        Categoria c4 = new Categoria("Enlatados");
 
-            if (i > 450) {
-                emp.addProject(p1);
-            }
+        em.persist(c1);
+        em.persist(c2);
+        em.persist(c3);
+        em.persist(c4);
 
-            em.persist(emp);
-        }
-        for (int i = 0; i < 100; i++) {
-            Employee emp = new Employee(
-                    "SSN2" + i,
-                    "Name " + i,
-                    "Lastname " + i,
-                    "Birthdate " + i);
-            emp.setDepartment(dept2);
-            em.persist(emp);
-        }
+        Producto pro1 = new Producto("Coca Cola Regular", 800.0, 10, p1, c1);
+        Producto pro2 = new Producto("Fanta Naranja Regular", 800.0, 10, p1, c1);
+        Producto pro3 = new Producto("Rinso", 1500.0, 50, p2, c2);
+        Producto pro4 = new Producto("M&Ms", 700.0, 10, p3, c3);
+        Producto pro5 = new Producto("Atún Sardimar", 1500.0, 5, p3, c4);
+
+        em.persist(pro1);
+        em.persist(pro2);
+        em.persist(pro3);
+        em.persist(pro4);
+        em.persist(pro5);
 
         em.getTransaction().commit();
 
-        System.out.println("Elapsed time: " + ((System.nanoTime() - startTime) / 1000000) + " ms");
-
-        TypedQuery<Department> q1 = em.createQuery("SELECT d FROM Department d", Department.class);
-        List<Department> result = q1.getResultList();
-
-
-
-        //EJERCICIO 1
-
-        //
-
+//        TypedQuery<Department> q1 = em.createQuery("SELECT d FROM Department d", Department.class);
+//        List<Department> result = q1.getResultList();
 
         em.close();
         emf.close();

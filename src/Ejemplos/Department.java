@@ -1,4 +1,4 @@
-package Models;
+package Ejemplos;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;

@@ -1,4 +1,4 @@
-package Models;
+package Ejemplos;
 
 import javax.persistence.*;
 import java.io.Serializable;
