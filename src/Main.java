@@ -9,14 +9,9 @@ import javax.persistence.*;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) {
 
-        EntityManagerFactory emf =
-                Persistence.createEntityManagerFactory("C:/Users/Marlo/Desktop/taller.odb");
-        EntityManager em = emf.createEntityManager();
-
+    public static void insertData(EntityManager em) {
         em.getTransaction().begin();
-
         Proveedor p1 = new Proveedor("Antonio Hernández", "Coca Cola", "San José", "85694312");
         Proveedor p2 = new Proveedor("Pedro Pérez", "Robasa", "Alajuela", "75809340");
         Proveedor p3 = new Proveedor("Gregorio García", "Coarsa", "Cartago", "65498382");
@@ -50,33 +45,35 @@ public class Main {
         em.persist(pro6);
 
         em.getTransaction().commit();
+    }
 
-        //Consulta para obtener un solo producto
-        TypedQuery<Producto> q1 = em.createQuery("SELECT p FROM Producto p WHERE p.nombre = \"Te\"", Producto.class);
-        Producto p = q1.getSingleResult();
-        System.out.println(p);
-
+    public static void updateProduct(EntityManager em) {
         em.getTransaction().begin();
 
         //Actualización de un producto
-        Query q2 = em.createQuery("UPDATE Producto p SET p.precio = 50000.0 WHERE p.nombre = \"Te\"");
+        Query q2 = em.createQuery("UPDATE Producto p SET p.precio = 10000 WHERE p.nombre = \"Te\"");
         q2.executeUpdate();
 
         em.getTransaction().commit();
+    }
 
-        //Consulta para verificar que se actualizó el producto
-        TypedQuery<Producto> q3 = em.createQuery("SELECT p FROM Producto p WHERE p.nombre = \"Te\"", Producto.class);
-        Producto updated = q3.getSingleResult();
-        System.out.println(updated);
-
+    public static void deleteProduct(EntityManager em) {
         em.getTransaction().begin();
-
         //Eliminación
         Query q4 = em.createQuery("DELETE FROM Producto p WHERE p.nombre = \"Te\"");
         q4.executeUpdate();
 
         em.getTransaction().commit();
+    }
 
+    public static void getProduct(EntityManager em) {
+        //Consulta para obtener un solo producto
+        TypedQuery<Producto> q1 = em.createQuery("SELECT p FROM Producto p WHERE p.nombre = \"Te\"", Producto.class);
+        Producto p = q1.getSingleResult();
+        System.out.println(p);
+    }
+
+    public static void getProducts(EntityManager em) {
         //Consulta de múltiples productos
         TypedQuery<Producto> q5 = em.createQuery("SELECT p FROM Producto p", Producto.class);
         List<Producto> results = q5.getResultList();
@@ -85,6 +82,26 @@ public class Main {
         for (Producto pro : results) {
             System.out.println(pro);
         }
+    }
+
+    public static void main(String[] args) {
+
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("C:/Users/pvill/Desktop/taller.odb");
+        EntityManager em = emf.createEntityManager();
+
+        insertData(em);
+
+        getProduct(em);
+
+        updateProduct(em);
+
+        //Consulta para verificar que se actualizó el producto
+
+        getProduct(em);
+
+        deleteProduct(em);
+
+        getProducts(em);
 
         em.close();
         emf.close();
